@@ -1,0 +1,38 @@
+# 操作系统
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# 编辑器 / IDE
+.vscode/
+.idea/
+.trae/
+*.code-workspace
+*.swp
+
+# 本地截图、临时文件
+.screenshots/
+*.local
+*.tmp
+*.log
+
+# Python（本地起静态服务器时可能产生）
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# Node（如果以后加构建流程）
+node_modules/
+npm-debug.log*
+yarn-error.log*
+
+# 环境变量与密钥
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# Docker 本地构建产物
+*.tar
