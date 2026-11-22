@@ -1,7 +1,7 @@
 # 璀璨圣诞树 · Merry Christmas
 
 一个基于 Three.js 的 WebGL 3D 圣诞树交互场景：可旋转缩放、星光漂浮、礼物盒与彩球装饰、可上传回忆相册，并支持通过 MediaPipe Hands 用手势控制场景。
-
+# 演示站:https://qjskjktafiyc.sealosgzg.site
 # 效果
 ![璀璨圣诞树](http://fox-reg.imagency.cn/a/202611/22/6b02523c1f498.png)
 
@@ -19,11 +19,11 @@ docker run -d --name merry-christmas -p 8080:80 lurendev/merry-christmas:0.1
 
 打开 <http://localhost:8080/index.html>。
 
-方式二，本地静态服务器：
+方式二，本地静态服务器（需要 Python 3）：
 
 ```powershell
-cd d:\Git_CangKu_2026\christmas-tree
-& "C:\Users\sumo\.conda\envs\shuxue\python.exe" -m http.server 8000 --bind 127.0.0.1
+# 在项目根目录执行
+python -m http.server 8000 --bind 127.0.0.1
 ```
 
 打开 <http://127.0.0.1:8000/index.html>。
@@ -92,26 +92,23 @@ christmas-tree/
 ## 环境要求
 
 - 浏览器：Chrome / Edge 等支持 WebGL2 与 ES Module 的现代浏览器
-- 本地起服务：conda `shuxue` 环境（Python 3.12）；或直接使用 Docker
+- 本地起服务：Python 3（任意版本均可）或 Docker
 
 ## 本地运行（Python）
 
-Windows PowerShell：
+在项目根目录执行：
 
 ```powershell
-# 进入项目目录
-cd d:\Git_CangKu_2026\christmas-tree
-
-# 用 shuxue 环境的 Python 启动静态服务器（端口 8000）
-& "C:\Users\sumo\.conda\envs\shuxue\python.exe" -m http.server 8000 --bind 127.0.0.1
-```
-
-可选：先激活环境再启动
-
-```powershell
-conda activate shuxue
 python -m http.server 8000 --bind 127.0.0.1
 ```
+
+Mac / Linux：
+
+```bash
+python3 -m http.server 8000 --bind 127.0.0.1
+```
+
+然后打开 <http://127.0.0.1:8000/index.html>。
 
 停止服务：在运行窗口按 `Ctrl + C`。
 
