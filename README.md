@@ -2,6 +2,9 @@
 
 一个基于 Three.js 的 WebGL 3D 圣诞树交互场景：可旋转缩放、星光漂浮、礼物盒与彩球装饰、可上传回忆相册，并支持通过 MediaPipe Hands 用手势控制场景。
 
+# 效果
+![璀璨圣诞树](http://fox-reg.imagency.cn/a/202611/22/6b02523c1f498.png)
+
 项目是**已构建好的纯静态站点**（Vite 打包产物），没有源码依赖，也不需要 `npm install`，用任意静态文件服务器或 Docker 即可运行。
 
 [![Docker Pulls](https://img.shields.io/docker/pulls/lurendev/merry-christmas)](https://hub.docker.com/r/lurendev/merry-christmas)
@@ -24,6 +27,47 @@ cd d:\Git_CangKu_2026\christmas-tree
 ```
 
 打开 <http://127.0.0.1:8000/index.html>。
+
+## 部署到 Sealos
+
+镜像已发布，Sealos 直接拉取即可，无需在云端重新构建，也不需要写 YAML。用【应用管理】(App Launchpad) 几步就能上线。
+
+1. 登录 [Sealos Cloud](https://cloud.sealos.run)（或所在区域，如 `hzh.sealos.run`、`bja.sealos.run`）
+2. 打开【应用管理】→【新建应用】
+3. 按下面填写：
+
+| 字段 | 值 |
+| --- | --- |
+| 应用名称 | `merry-christmas` |
+| 镜像源 | 公开 |
+| 镜像名 | `lurendev/merry-christmas:0.1` |
+| 资源配置 | 固定实例 |
+| CPU | `0.1` |
+| 内存 | `256 Mi` |
+| 容器暴露端口 | `80` |
+| 公网访问 | 开启 |
+
+4. 点击【部署】
+5. 部署完成后在新页面能看到「公网访问」地址，点开就能访问页面
+
+Sealos 会自动签发 HTTPS 证书，而手势识别依赖安全上下文，因此该域名可直接使用摄像头，无需额外配置。
+
+部署后验证：
+
+- 首页能正常渲染 3D 圣诞树
+- F12 → Network 中 `hands_solution_simd_wasm_bin.wasm` 返回 `application/wasm`（镜像内 Nginx 已配好 MIME）
+- 点「手势控制」能正常弹出摄像头授权
+
+注意事项：
+
+- **拉取镜像超时**：国内节点拉 Docker Hub 可能限速，可把镜像另推一份到阿里云 ACR 等国内仓库，再将镜像名改为该地址
+- **计费**：Sealos Cloud 按资源用量计费，保持 `0.1 核 / 256 Mi` 成本很低；不对外展示时可缩容到 0 副本
+- **更新版本**：应用详情 →【变更】改镜像 tag 即可滚动更新，无需删除应用重建
+- **必须用 HTTPS 域名访问**：非 HTTPS 下浏览器会禁用摄像头，手势功能不可用
+
+## 部署（其他静态托管）
+
+整个目录就是静态产物，可原样放到任意静态托管（Nginx、GitHub Pages、对象存储等）的根目录下，也可直接用本仓库的 Docker 镜像部署。注意保持 `assets/`、`audio/`、`mediapipe/` 与 `index.html` 的相对位置不变；如需在公网使用摄像头功能，站点必须为 HTTPS。
 
 ## 目录结构
 
@@ -108,40 +152,6 @@ docker build -t lurendev/merry-christmas:0.1 .
 docker push lurendev/merry-christmas:0.1
 ```
 
-## 部署到 Sealos
-
-镜像已发布，Sealos 直接拉取即可，无需在云端重新构建。使用 Sealos 的【应用管理】(App Launchpad) 即可完成部署，不需要写 YAML。
-
-1. 登录 [Sealos Cloud](https://cloud.sealos.run)（或所在区域，如 `hzh.sealos.run`、`bja.sealos.run`）
-2. 桌面 →【应用管理】→【新建应用】
-3. 按下表填写：
-
-| 字段 | 值 |
-| --- | --- |
-| 应用名称 | `merry-christmas` |
-| 镜像名 | `lurendev/merry-christmas:0.1` |
-| 镜像仓库凭证 | 不用填（公开镜像） |
-| CPU / 内存 | `0.2 核` / `256 Mi` |
-| 副本数 | `1` |
-| 网络端口 | 容器端口 `80` → 勾选**外网访问** |
-
-4. 点【部署】，等状态变为 Running，复制生成的外网地址（形如 `https://xxxxxxx.hzh.sealos.run`）访问即可
-
-Sealos 会自动签发 HTTPS 证书，而手势识别依赖安全上下文，因此该域名可直接使用摄像头，无需额外配置。
-
-部署后验证：
-
-- 首页能正常渲染 3D 圣诞树
-- F12 → Network 中 `hands_solution_simd_wasm_bin.wasm` 返回 `application/wasm`（镜像内 Nginx 已配好 MIME）
-- 点「手势控制」能正常弹出摄像头授权
-
-注意事项：
-
-- **拉取镜像超时**：国内节点拉 Docker Hub 可能限速，可把镜像另推一份到阿里云 ACR 等国内仓库，再将镜像名改为该地址
-- **计费**：Sealos Cloud 按资源用量计费，保持 `0.2 核 / 256 Mi` 成本很低；不对外展示时可缩容到 0 副本
-- **更新版本**：应用详情 →【变更】改镜像 tag 即可滚动更新，无需删除应用重建
-- **必须用 HTTPS 域名访问**：非 HTTPS 下浏览器会禁用摄像头，手势功能不可用
-
 ## 功能说明
 
 | 功能 | 说明 |
@@ -186,7 +196,3 @@ Sealos 会自动签发 HTTPS 证书，而手势识别依赖安全上下文，因
 此外可看 Console 是否有 `Failed to initialize MediaPipe` 或 `hands.send() failed:` 红色报错。
 
 **建议**：首次打开页面时先等加载完再点手势控制；抓包确认 `mediapipe/` 下 3 个大文件是否 200 返回。想彻底消除首次等待，需要改源码做模型预加载，属于额外改造。
-
-## 部署
-
-整个目录就是静态产物，可原样放到任意静态托管（Nginx、GitHub Pages、对象存储、Sealos 等）的根目录下，也可直接用本仓库的 Docker 镜像部署。注意保持 `assets/`、`audio/`、`mediapipe/` 与 `index.html` 的相对位置不变；如需在公网使用摄像头功能，站点必须为 HTTPS（Sealos 部署方式见上文【部署到 Sealos】）。
